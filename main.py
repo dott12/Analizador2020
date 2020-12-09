@@ -1,4 +1,5 @@
 import csv
+from word import Word
 import random
 from random import randint
 import tkinter as tk
@@ -7,13 +8,12 @@ root.geometry("400x240")
 
 
 
+
 ###################################################################
 #####################################DECLARACIÓN DE VARIABLES
 ###################################################################
 csvTokenList = []
 csvTokenTypeList=[]
-globalWordList = []
-wordListType = []
 
 
 ####Esta parte no está en una def() por que siempre se va a hacer
@@ -38,43 +38,57 @@ label.pack()
 #####################################DECLARACIÓN DE FUNCIONES
 ###################################################################
 
-
-
-
-###Aqui se separa cada palabra del codigo y se pone en una lista
-def splitText(txt):
-    wordList = txt.split()
-    print (wordList)
-    categorize(wordList)
-    printelementstokens()
-
 #####################################################AQUÍ SE HACE EL TRIGGER DEL PROGRAMA
 def getTextInput():
     result=textExample.get("1.0","end")
     print(result)
-    splitText(result)
-    ##print (TokenList)
+    analyzetext(result)
+    #print (TokenList)
+
+###Aqui se separa cada palabra del codigo y se pone en una lista
+# JK: Cambie esta funcion de split a Analyze, porque es aqui donde se hacen las llamadas a las distintas funciones, y agregue un par de cosas nuevas
+def analyzetext(txt):
+    wordList = txt.split()
+    testarrayobj = categorize(wordList)
+    printelementstokens(testarrayobj)
 
 
 
+# JK: Modifique Categorize para que cree la lista de objetos de tipo Word
 def categorize(wordList):
+    words = []
     for element in wordList:
-        globalWordList.append(element)
-        isnumber = element.isnumeric()
-        if (isnumber):
-            wordListType.append("NUMERO")
-        else:
-            wordListType.append("Non")
+        # isnumber = element.isnumeric()
+        word = tokenize(element)
+        words.append(word)
+    return words
+
+        #if (isnumber):
+        #    wordListType.append("NUMERO")
+        #else:
+        #    wordListType.append("Non")
+
+# JK: Nueva funcion para crear objetos con el nuevo tipo Word.
+# Se comparan con el listado de tokens que se parsea desde el CSV,
+# pero seguramente podria hacerse desde el mismo word.py
+# TODO: Crear la parte que asigna el Token de "VARIABLE" o "NUMERO" utilizando REGEX
+def tokenize(word):
+    for token in csvTokenList:
+        if (word == token):
+            #print("[+] DEBUG: word=" + word + " token=" + token)
+            tokenized = Word(token, csvTokenTypeList[csvTokenList.index(token)])
+            return tokenized
+        #else:
+        #    print("[+] DEBUG: word=" + word + " token=" + token)
+        #    tokenized = Word(token, "Non")
+        #    return tokenized
 
 
-
-def printelementstokens():
-
-    print(len(wordListType))
-    ###for i in range(len(wordListType)):
-
-    print (globalWordList)
-    print(wordListType)
+# TODO: Encontrar una mejor manera de recibir feedback
+def printelementstokens(words):
+    print(len(words))
+    for word in words:
+        print ("[+] DEBUG: word=" + word.token + " token=" + word.lexema)
 
 
 
@@ -88,8 +102,7 @@ def printelementstokens():
 ###Primer paso de la GUI
 textExample=tk.Text(root, height=10)
 textExample.pack()
-btnRead=tk.Button(root, height=1, width=10, text="Read",
-                    command=getTextInput)
+btnRead=tk.Button(root, height=1, width=10, text="Read", command=getTextInput)
 btnRead.pack()
 
 root.mainloop()
