@@ -88,7 +88,7 @@ def tokenize(word):
 def printelementstokens(words):
     print(len(words))
     for word in words:
-        print ("[+] DEBUG: word=" + word.token + " token=" + word.lexema)
+        print ("[+] DEBUG: token=" + word.token + " lexema=" + word.lexema)
 
 
 
