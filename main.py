@@ -41,6 +41,7 @@ label.pack()
 #####################################################AQUÍ SE HACE EL TRIGGER DEL PROGRAMA
 def getTextInput():
     result=textExample.get("1.0","end")
+    result = result.upper()
     print(result)
     analyzetext(result)
     #print (TokenList)
@@ -48,6 +49,7 @@ def getTextInput():
 ###Aqui se separa cada palabra del codigo y se pone en una lista
 # JK: Cambie esta funcion de split a Analyze, porque es aqui donde se hacen las llamadas a las distintas funciones, y agregue un par de cosas nuevas
 def analyzetext(txt):
+
     wordList = txt.split()
     testarrayobj = categorize(wordList)
     printelementstokens(testarrayobj)
@@ -88,6 +90,8 @@ def tokenize(word):
 def printelementstokens(words):
     print(len(words))
     for word in words:
+
+
         print ("[+] DEBUG: token=" + word.token + " lexema=" + word.lexema)
 
 
