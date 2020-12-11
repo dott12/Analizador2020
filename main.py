@@ -65,25 +65,31 @@ def categorize(wordList):
         words.append(word)
     return words
 
-        #if (isnumber):
-        #    wordListType.append("NUMERO")
-        #else:
-        #    wordListType.append("Non")
 
 # JK: Nueva funcion para crear objetos con el nuevo tipo Word.
 # Se comparan con el listado de tokens que se parsea desde el CSV,
 # pero seguramente podria hacerse desde el mismo word.py
 # TODO: Crear la parte que asigna el Token de "VARIABLE" o "NUMERO" utilizando REGEX
 def tokenize(word):
-    for token in csvTokenList:
-        if (word == token):
-            #print("[+] DEBUG: word=" + word + " token=" + token)
-            tokenized = Word(token, csvTokenTypeList[csvTokenList.index(token)])
-            return tokenized
-        #else:
-        #    print("[+] DEBUG: word=" + word + " token=" + token)
-        #    tokenized = Word(token, "Non")
-        #    return tokenized
+
+#IV: Se movió el código para primero detectar si es número
+#Si es así, envía directamente la data de que el token es tipo número
+    isnumber = word.isnumeric()
+
+    if (isnumber):
+        tokenized = Word(word, "NUMERO")
+        return tokenized
+
+    else:
+        for token in csvTokenList:
+            if (word == token):
+                #print("[+] DEBUG: word=" + word + " token=" + token)
+                tokenized = Word(token, csvTokenTypeList[csvTokenList.index(token)])
+                return tokenized
+            #else:
+            #    print("[+] DEBUG: word=" + word + " token=" + token)
+            #    tokenized = Word(token, "Non")
+            #    return tokenized
 
 
 # TODO: Encontrar una mejor manera de recibir feedback
