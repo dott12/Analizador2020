@@ -1,8 +1,10 @@
 import csv
-from word import Word
 import random
 from random import randint
 import tkinter as tk
+import tokens
+import ply.yacc as yacc
+
 root = tk.Tk()
 root.geometry("400x240")
 
@@ -100,8 +102,6 @@ def tokenize(word):
 def printelementstokens(words):
     print(len(words))
     for word in words:
-
-
         print ("[+] DEBUG: token=" + word.token + " lexema=" + word.lexema)
 
 
