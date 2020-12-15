@@ -84,9 +84,9 @@ def tokenize(word):
                 if (word == token):
                 #print("[+] DEBUG: word=" + word + " token=" + token)
                     tokenized = Word(token, csvTokenTypeList[csvTokenList.index(token)])
-                return tokenized
+            return tokenized
         except:
-            tokenized = Word(word, "CADENA")
+            tokenized = Word(word, "NAME")
             return tokenized
             #else:
             #    print("[+] DEBUG: word=" + word + " token=" + token)

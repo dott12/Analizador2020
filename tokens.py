@@ -4,13 +4,14 @@ import ply.yacc as yacc
 
 
 # TODO: Buscar una manera de definir mas tokens (CREO?)
-reservadas = ['INT', 'INICIO', 'FIN','ESCRIBIR','LEER','MIENTRAS','PARA','FINSI','HACER',
-              'SI','SINO','CASE','BREAK','DEFAULT','SWITCH','PRINCIPAL']
+#'ESCRIBIR','LEER','MIENTRAS','PARA','FINSI','HACER','SI','SINO','CASE','BREAK','DEFAULT','SWITCH','PRINCIPAL'
+
+reservadas = ['INICIO', 'FIN', 'ESCRIBIR', 'LEER']
 
 tokens = reservadas + [
     'NAME','NUMBER',
     'PLUS','MINUS','TIMES','DIVIDE','EQUALS',
-    'LPAREN','RPAREN'
+    'LPAREN','RPAREN', 'QUOTE'
 ]
 
 # Tokens
@@ -22,6 +23,7 @@ t_DIVIDE  = r'/'
 t_EQUALS  = r'='
 t_LPAREN  = r'\('
 t_RPAREN  = r'\)'
+t_QUOTE  = r'\''
 #t_NAME    = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
 
@@ -54,6 +56,7 @@ parkin = lex.lex()
 
 # Precedence rules for the arithmetic operators
 precedence = (
+    ('left', 'INICIO', 'FIN'),
     ('left','PLUS','MINUS'),
     ('left','TIMES','DIVIDE'),
     ('right','UMINUS'),
@@ -63,29 +66,26 @@ precedence = (
 names = { }
 
 def p_validprogram(p):
-    'program : INICIO statement FIN'
+    'program : INICIO block FIN'
+
+# <STAT> -> <EXP>
+
+def p_statement_expr(p):
+    'statement : expression'
+    print(p[1])
+
+def p_block(p):
+    'block : statement'
+    print(p[1])
+
+def p_block2(p):
+    'block : block expression'
+    print(p[1])
 
 # <STAT> -> <ID> EQUALS <NUMBER> | <ID> EQUALS <ID>
 def p_statement_assign(p):
     'statement : NAME EQUALS expression'
     names[p[1]] = p[3]
-
-# <STAT> -> <EXP>
-def p_statement_expr(p):
-    'statement : expression'
-    print(p[1])
-
-"""
-def p_expression_binop(p):
-    '''expression : expression PLUS expression
-                  | expression MINUS expression
-                  | expression TIMES expression
-                  | expression DIVIDE expression'''
-    if p[2] == '+'  : p[0] = p[1] + p[3]
-    elif p[2] == '-': p[0] = p[1] - p[3]
-    elif p[2] == '*': p[0] = p[1] * p[3]
-    elif p[2] == '/': p[0] = p[1] / p[3]
-"""
 
 # <OP> -> <NUMBER> PLUS <NUMBER> | <NUMBER> MINUS <NUMBER> | <NUMBER> TIMES <NUMBER> | <NUMBER> DIVIDE <NUMBER>
 def p_expression_binop(p):
@@ -99,10 +99,15 @@ def p_expression_binop(p):
     elif p[2] == '/': print("Valid DIV: " + str(p[1]) + " / " + str(p[3]))
 
 
+def p_string(p):
+    'string : QUOTE expression QUOTE'
 
 def p_write(p):
-    'expression : ESCRIBIR expression'
+    '''expression : ESCRIBIR expression
+                |  ESCRIBIR string'''
 
+def p_read(p):
+    'expression : LEER expression'
 
 def p_expression_uminus(p):
     'expression : MINUS expression %prec UMINUS'
@@ -133,13 +138,3 @@ test = yacc.yacc(debug=True)
 
 def analyze(input):
     return test.parse(input, debug=True)
-
-#Debug
-#lexer.input("FIN = 12")
-
-#while True:
-#    tok = lexer.token()
-#    if not tok:
-#        break
-#    print(tok)
-
