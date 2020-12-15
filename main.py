@@ -1,12 +1,10 @@
 import csv
 import random
 from random import randint
-import tkinter as tk
+from tkinter import *
+from word import Word
 import tokens
-import ply.yacc as yacc
 
-root = tk.Tk()
-root.geometry("400x240")
 
 
 
@@ -32,9 +30,6 @@ with open('Tipos.csv', 'r', encoding='utf-8') as csv_file:
 
 
 
-###LABEL: Aqui se declara la pantalla
-label = tk.Label(root, text="Inserte codigo")
-label.pack()
 
 ###################################################################
 #####################################DECLARACIÓN DE FUNCIONES
@@ -42,10 +37,11 @@ label.pack()
 
 #####################################################AQUÍ SE HACE EL TRIGGER DEL PROGRAMA
 def getTextInput():
-    result=textExample.get("1.0","end")
+    result = textExample.get("1.0","end")
     result = result.upper()
     print(result)
     analyzetext(result)
+    tokens.analyze(result)
     #print (TokenList)
 
 ###Aqui se separa cada palabra del codigo y se pone en una lista
@@ -54,6 +50,7 @@ def analyzetext(txt):
 
     wordList = txt.split()
     testarrayobj = categorize(wordList)
+
     printelementstokens(testarrayobj)
 
 
@@ -71,7 +68,6 @@ def categorize(wordList):
 # JK: Nueva funcion para crear objetos con el nuevo tipo Word.
 # Se comparan con el listado de tokens que se parsea desde el CSV,
 # pero seguramente podria hacerse desde el mismo word.py
-# TODO: Crear la parte que asigna el Token de "VARIABLE" o "NUMERO" utilizando REGEX
 def tokenize(word):
 
 #IV: Se movió el código para primero detectar si es número
@@ -112,12 +108,19 @@ def printelementstokens(words):
 #####################################MAIN PROGRAM
 ###################################################################
 
+root = Tk()
+
+pane = Frame(root)
+pane.pack(fill = BOTH, expand = True)
+
+###LABEL: Aqui se declara la pantalla
+label = Label(root, text="Inserte codigo")
+label.pack(fill = BOTH, expand = True)
 
 ###Primer paso de la GUI
-textExample=tk.Text(root, height=10)
-textExample.pack()
-btnRead=tk.Button(root, height=1, width=10, text="Read", command=getTextInput)
-btnRead.pack()
+textExample = Text(root, height=10)
+textExample.pack(side = TOP, expand = True, fill = BOTH)
+btnRead = Button(root, height=1, width=10, text="Read", command=getTextInput)
+btnRead.pack(side = TOP, expand = True, fill = BOTH)
 
 root.mainloop()
-
