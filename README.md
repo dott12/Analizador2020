@@ -45,7 +45,9 @@ y parseo.
 \
 ```
 
-<PROGRAMA> -> INICIO <STAT> FIN
+<PROGRAMA> -> INICIO <BLOCK> FIN
+
+<BLOCK> -> <BLOCK> <STAT> | <STAT>
 
 <STAT> -> <EXP> |  <ID> EQUALS <NUMBER> | <ID> EQUALS <ID>
 
